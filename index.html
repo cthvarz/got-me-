@@ -361,7 +361,7 @@
 <body>
 
   <!-- BGM AUDIO -->
-  <audio id="bgmAudio" src="nyaw.m4a" loop></audio>
+  <audio id="bgmAudio" src="metro.mp3" loop></audio>
 
   <!-- BACKGROUND GAMBAR / GIF AESTHETIC -->
   <img src="bgslot.GIF" class="bg-gif" alt="Background" onerror="this.style.display='none'">
@@ -386,7 +386,7 @@
         <svg width="72" height="66" viewBox="0 0 100 90" class="heart-svg">
           <defs>
             <pattern id="userPhoto" x="0" y="0" width="1" height="1" patternUnits="objectBoundingBox">
-              <image href="loveframe.PNG" x="0" y="0" width="100" height="90" preserveAspectRatio="xMidYMid slice" />
+              <image href="framelove.jpg" x="0" y="0" width="100" height="90" preserveAspectRatio="xMidYMid slice" />
             </pattern>
             <linearGradient id="heartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="#ff758c" />
@@ -431,7 +431,7 @@
     // DATA 10 JACKPOT QUOTE
     const jackpotData = [
       {
-        img: 'pict1.GIF',
+        img: 'pict3.GIF',
         text: "You, why are you so perfect? When viewed with love, every flaw transforms into beauty."
       },
       {
@@ -439,7 +439,7 @@
         text: "When others look down on you, I close my eyes only to realize how deeply beautiful it is to love someone like you—a person with many miracles that they fail to see."
       },
       {
-        img: 'pict3.GIF',
+        img: 'pict1.GIF',
         text: "If there’s a flower as beautiful as they say, it must be you."
       },
       {
@@ -452,7 +452,7 @@
       },
       {
         img: 'pict6.GIF',
-        text: "Jika orang lain menggunakan kreativitas otaknya untuk menggambar, aku cuma bisa pakai perasaan hatiku untuk menggambarkan betapa indahnya seni seperti kamu."
+        text: "Jika orang lain menggunakan kreativitas otaknya sebagai inspirasi seni, maka aku akan pakai perasaan hati untuk menggambarkan betapa indahnya seni seperti kamu."
       },
       {
         img: 'pict7.GIF',
@@ -463,14 +463,17 @@
         text: "Aku memang bukan salah satu yang menjadi penyemangat di hidup kamu tetapi aku yang akan menjadi satu satunya penyelamat saat kamu terjatuh."
       },
       {
-        img: 'pict9.GIF',
+        img: 'pict10.GIF',
         text: "Entah kenapa, bahagiaku rasanya selalu tersinkron dengan kamu."
       },
       {
-        img: 'pict10.GIF',
+        img: 'pict9.GIF',
         text: "How could I only admire the beauty of the shore when you are the vast ocean itself?"
       }
     ];
+
+    // VARIABEL ANTREAN QUOTE AGAR TIDAK DOUBLE
+    let remainingQuotes = [...jackpotData];
 
     let isSpinning = false;
     const rates = [1/18, 1/9, 1/7, 1/5];
@@ -624,10 +627,17 @@
     function showJackpotQuote() {
       createHeartExplosion();
 
-      const randomData = jackpotData[Math.floor(Math.random() * jackpotData.length)];
+      // Jika antrean quote habis, isi ulang 10 quote lagi dari awal
+      if (remainingQuotes.length === 0) {
+        remainingQuotes = [...jackpotData];
+      }
+
+      // Ambil acak satu quote dari antrean yang belum keluar
+      const randomIndex = Math.floor(Math.random() * remainingQuotes.length);
+      const selectedData = remainingQuotes.splice(randomIndex, 1)[0];
       
       const quoteDisplay = document.getElementById('quoteDisplay');
-      quoteDisplay.src = randomData.img;
+      quoteDisplay.src = selectedData.img;
 
       clearTimeout(typingTimer);
       document.getElementById('typewriterText').textContent = '';
@@ -636,7 +646,7 @@
       modal.classList.add('active');
 
       setTimeout(() => {
-        typeWriter(randomData.text, 'typewriterText');
+        typeWriter(selectedData.text, 'typewriterText');
       }, 250);
     }
 
