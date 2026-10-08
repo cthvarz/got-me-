@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flower Slot Machine Special 🌸</title>
+  <!-- Google Fonts: Poppins & VT323 (Retro Pixel) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background: #0f0c20;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* LATAR BELAKANG GAMBAR / GIF AESTHETIC */
+    .bg-gif {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.45;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* WADAH MESIN SLOT (PINK GLASSMORPHISM) */
+    .slot-card {
+      position: relative;
+      z-index: 10;
+      width: 90%;
+      max-width: 380px;
+      background: rgba(255, 182, 193, 0.22);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1.5px solid rgba(255, 192, 203, 0.5);
+      border-radius: 28px;
+      padding: 28px 20px;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(255, 105, 180, 0.35),
+                  inset 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+
+    .slot-header h1 {
+      color: #fff;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 12px rgba(255, 105, 180, 0.8);
+    }
+
+    .slot-header p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 12px;
+      margin-top: 4px;
+      margin-bottom: 20px;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    /* JENDELA ROL EMOJI */
+    .reels-container {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      background: rgba(255, 105, 180, 0.15);
+      padding: 16px 12px;
+      border-radius: 20px;
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      margin-bottom: 20px;
+      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .reel {
+      width: 75px;
+      height: 85px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.1));
+      border-radius: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 42px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: transform 0.1s;
+    }
+
+    .reel.spinning {
+      animation: slotBlur 0.1s infinite linear;
+    }
+
+    @keyframes slotBlur {
+      0% { transform: translateY(-3px); filter: blur(2px); }
+      50% { transform: translateY(3px); filter: blur(2px); }
+      100% { transform: translateY(0); filter: blur(0); }
+    }
+
+    /* TOMBOL LUCKY BOOST BENTUK LOVE */
+    .lucky-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .heart-btn-box {
+      position: relative;
+      cursor: pointer;
+      display: inline-block;
+      transition: transform 0.2s ease;
+      animation: heartPulse 1.6s infinite ease-in-out;
+    }
+
+    .heart-btn-box:active {
+      transform: scale(0.88);
+    }
+
+    .heart-btn-box.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      animation: none;
+      filter: grayscale(0.5);
+    }
+
+    @keyframes heartPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    .heart-svg {
+      filter: drop-shadow(0 0 12px rgba(255, 105, 180, 0.9));
+    }
+
+    .lucky-badge {
+      position: absolute;
+      top: -2px;
+      right: -4px;
+      background: linear-gradient(135deg, #ffe066, #ffd166);
+      color: #0f0c20;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      z-index: 5;
+    }
+
+    .lucky-text-label {
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 6px;
+      letter-spacing: 0.3px;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    /* TOMBOL SPIN */
+    .btn-spin {
+      width: 100%;
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 16px;
+      border-radius: 22px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 22px rgba(255, 117, 140, 0.5);
+      transition: all 0.2s ease;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-spin:active {
+      transform: scale(0.96);
+    }
+
+    .btn-spin:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* EFEK LEDAKAN LOVE & BUNGA (PARTIKEL) */
+    .heart-particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+      animation: floatHeart 1.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+
+    @keyframes floatHeart {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) translate(0, 0) scale(0.4) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(1.4) rotate(var(--rot));
+      }
+    }
+
+    /* POP-UP FULL SCREEN (JACKPOT QUOTE) */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 8, 20, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 380px;
+      background: rgba(255, 192, 203, 0.18);
+      border: 1.5px solid rgba(255, 192, 203, 0.4);
+      border-radius: 24px;
+      padding: 18px;
+      text-align: center;
+      transform: scale(0.8);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 0 35px rgba(255, 117, 140, 0.4);
+    }
+
+    .modal-overlay.active .modal-box {
+      transform: scale(1);
+    }
+
+    .jackpot-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #ffe066, #f72585);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    /* CONTAINER KARTU PIXEL DIALOGUE */
+    .pixel-card-container {
+      position: relative;
+      width: 100%;
+      height: 340px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 3px solid #e1b8da;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 10px;
+      background-color: #20132e;
+    }
+
+    /* Gambar Background di dalam Pixel Box */
+    .quote-bg-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    /* Kotak Dialog Pixel Retro */
+    .pixel-dialogue-box {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      min-height: 90px;
+      max-height: 130px;
+      overflow-y: auto;
+      background: rgba(32, 19, 46, 0.94);
+      border: 2px solid #e1b8da;
+      outline: 2px solid #2b1835;
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #f7e8f6;
+      font-family: 'VT323', monospace !important;
+      font-size: 18px;
+      line-height: 1.3;
+      text-align: left;
+      letter-spacing: 0.5px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
+    }
+
+    .pixel-dialogue-box * {
+      font-family: 'VT323', monospace !important;
+    }
+
+    /* Panah Berkedip ala RPG Game */
+    .pixel-dialogue-box::after {
+      content: '▼';
+      position: absolute;
+      right: 8px;
+      bottom: 4px;
+      font-size: 11px;
+      color: #e1b8da;
+      animation: blink 0.8s infinite alternate;
+    }
+
+    @keyframes blink {
+      0% { opacity: 0.2; transform: translateY(0); }
+      100% { opacity: 1; transform: translateY(2px); }
+    }
+
+    .btn-close {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.25);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 12px;
+      border-radius: 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-close:active {
+      background: rgba(255, 255, 255, 0.35);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BGM AUDIO -->
+  <audio id="bgmAudio" src="nyaw.m4a" loop></audio>
+
+  <!-- BACKGROUND GAMBAR / GIF AESTHETIC -->
+  <img src="bgslot.GIF" class="bg-gif" alt="Background" onerror="this.style.display='none'">
+
+  <!-- KARTU UTAMA MESIN SLOT (FLOWER JACKPOT) -->
+  <div class="slot-card">
+    <div class="slot-header">
+      <h1>Love Jackpot</h1>
+      <p>Putar buat mengetahui bahwa kamu itu sangat berarti sayang! 💗</p>
+    </div>
+
+    <div class="reels-container">
+      <div class="reel" id="reel1">🌸</div>
+      <div class="reel" id="reel2">🌷</div>
+      <div class="reel" id="reel3">🌹</div>
+    </div>
+
+    <!-- TOMBOL LUCKY BOOST BENTUK LOVE (FOTO AKU) -->
+    <div class="lucky-wrapper">
+      <div class="heart-btn-box" id="luckyBtn" onclick="boostLucky()">
+        <span class="lucky-badge" id="luckyBadge">3x</span>
+        <svg width="72" height="66" viewBox="0 0 100 90" class="heart-svg">
+          <defs>
+            <pattern id="userPhoto" x="0" y="0" width="1" height="1" patternUnits="objectBoundingBox">
+              <image href="loveframe.PNG" x="0" y="0" width="100" height="90" preserveAspectRatio="xMidYMid slice" />
+            </pattern>
+            <linearGradient id="heartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ff758c" />
+              <stop offset="100%" stop-color="#ff7eb3" />
+            </linearGradient>
+          </defs>
+          <!-- Bingkai Hati Luar (Glow) -->
+          <path d="M50 88 C20 60 0 35 18 12 C32 -4 50 16 50 16 C50 16 68 -4 82 12 C100 35 80 60 50 88 Z" fill="url(#heartGrad)" stroke="#ffffff" stroke-width="3" />
+          <!-- Isi Foto di Dalam Hati -->
+          <path d="M50 82 C23 56 6 33 21 13 C32 -1 50 17 50 17 C50 17 68 -1 79 13 C94 33 77 56 50 82 Z" fill="url(#userPhoto)" />
+        </svg>
+      </div>
+      <span class="lucky-text-label" id="luckyText">Mawu Lucky dari Aku hihi? 💖</span>
+    </div>
+
+    <button class="btn-spin" id="spinBtn" onclick="spinSlot()">
+      TAP DISINI SAYANG!
+    </button>
+  </div>
+
+  <!-- POP-UP FULL SCREEN (JACKPOT QUOTE WITH PIXEL DIALOGUE) -->
+  <div class="modal-overlay" id="quoteModal">
+    <div class="modal-box">
+      <span class="jackpot-badge">🎉 Yippie.. Jackpot ini berisikan how i see u with love!</span>
+      
+      <!-- WADAH PIXEL NOVEL -->
+      <div class="pixel-card-container">
+        <img src="" id="quoteDisplay" class="quote-bg-img" alt="Background Quote">
+        <div class="pixel-dialogue-box">
+          "<span id="typewriterText"></span>"
+        </div>
+      </div>
+
+      <button class="btn-close" onclick="closeModal()">Ayo Spin lagi Sayang ada 10 Hal yang tida kamu sadari. 🔄</button>
+    </div>
+  </div>
+
+  <script>
+    // EMOJI SET BUNGA
+    const flowers = ['🌸', '🌷', '🌹', '🌻', '🌺', '🪷'];
+
+    // DATA 10 JACKPOT QUOTE
+    const jackpotData = [
+      {
+        img: 'pict1.GIF',
+        text: "You, why are you so perfect? When viewed with love, every flaw transforms into beauty."
+      },
+      {
+        img: 'pict2.GIF',
+        text: "When others look down on you, I close my eyes only to realize how deeply beautiful it is to love someone like you—a person with many miracles that they fail to see."
+      },
+      {
+        img: 'pict3.GIF',
+        text: "If there’s a flower as beautiful as they say, it must be you."
+      },
+      {
+        img: 'pict4.GIF',
+        text: "Some people think understanding someone is like reading song lyrics. But to me, understanding you means feeling the melody too."
+      },
+      {
+        img: 'pict5.GIF',
+        text: "Just so you know, the people who walk past you will never match the potential you carry inside."
+      },
+      {
+        img: 'pict6.GIF',
+        text: "Jika orang lain menggunakan kreativitas otaknya untuk menggambar, aku cuma bisa pakai perasaan hatiku untuk menggambarkan betapa indahnya seni seperti kamu."
+      },
+      {
+        img: 'pict7.GIF',
+        text: "Bagaimana orang-orang bisa begitu sibuk, sampai tak menyadari betapa hadirmu saja sudah cukup menyentuh jiwaku?"
+      },
+      {
+        img: 'pict8.GIF',
+        text: "Aku memang bukan salah satu yang menjadi penyemangat di hidup kamu tetapi aku yang akan menjadi satu satunya penyelamat saat kamu terjatuh."
+      },
+      {
+        img: 'pict9.GIF',
+        text: "Entah kenapa, bahagiaku rasanya selalu tersinkron dengan kamu."
+      },
+      {
+        img: 'pict10.GIF',
+        text: "How could I only admire the beauty of the shore when you are the vast ocean itself?"
+      }
+    ];
+
+    let isSpinning = false;
+    const rates = [1/18, 1/9, 1/7, 1/5];
+    let luckyLevel = 0;
+    let luckyClicksLeft = 3;
+    let typingTimer = null;
+
+    function boostLucky() {
+      if (luckyClicksLeft <= 0) return;
+
+      luckyLevel++;
+      luckyClicksLeft--;
+
+      const luckyText = document.getElementById('luckyText');
+      const luckyBadge = document.getElementById('luckyBadge');
+      const luckyBtn = document.getElementById('luckyBtn');
+
+      if (luckyLevel === 1) {
+        luckyBadge.innerText = '2x';
+        luckyText.innerText = 'Lucky Level 1! (Peluang 1/9 ✨)';
+        alert("Peluang jackpot naik jadi berkat aku yang lucu! 🥰");
+      } else if (luckyLevel === 2) {
+        luckyBadge.innerText = '1x';
+        luckyText.innerText = 'Lucky Level 2! (Peluang 1/7 💖)';
+        alert("Karena kamu selalu bilang aku lucu ini aku tingkatkan lagi! 😽");
+      } else if (luckyLevel === 3) {
+        luckyBadge.innerText = 'MAX';
+        luckyText.innerText = 'LUCKY MAKSIMAL! (Peluang 1/5 💘)';
+        luckyBtn.classList.add('disabled');
+        alert("Ini bertambah besar peluangnya sama kaya CINTA aku ke kamu! mwah💋");
+      }
+    }
+
+    function spinSlot() {
+      if (isSpinning) return;
+      isSpinning = true;
+
+      const bgm = document.getElementById('bgmAudio');
+      if (bgm) {
+        bgm.play().catch(err => console.log("Audio autoplay check:", err));
+      }
+
+      const spinBtn = document.getElementById('spinBtn');
+      const reel1 = document.getElementById('reel1');
+      const reel2 = document.getElementById('reel2');
+      const reel3 = document.getElementById('reel3');
+
+      spinBtn.disabled = true;
+      spinBtn.innerText = 'Spinning love for you... 💞';
+
+      reel1.classList.add('spinning');
+      reel2.classList.add('spinning');
+      reel3.classList.add('spinning');
+
+      const spinInterval = setInterval(() => {
+        reel1.innerText = flowers[Math.floor(Math.random() * flowers.length)];
+        reel2.innerText = flowers[Math.floor(Math.random() * flowers.length)];
+        reel3.innerText = flowers[Math.floor(Math.random() * flowers.length)];
+      }, 80);
+
+      setTimeout(() => {
+        clearInterval(spinInterval);
+
+        reel1.classList.remove('spinning');
+        reel2.classList.remove('spinning');
+        reel3.classList.remove('spinning');
+
+        let res1, res2, res3;
+        const currentRate = rates[luckyLevel];
+        const isJackpot = Math.random() < currentRate;
+
+        if (isJackpot) {
+          const winningFlower = flowers[Math.floor(Math.random() * flowers.length)];
+          res1 = winningFlower;
+          res2 = winningFlower;
+          res3 = winningFlower;
+        } else {
+          do {
+            res1 = flowers[Math.floor(Math.random() * flowers.length)];
+            res2 = flowers[Math.floor(Math.random() * flowers.length)];
+            res3 = flowers[Math.floor(Math.random() * flowers.length)];
+          } while (res1 === res2 && res2 === res3);
+        }
+
+        reel1.innerText = res1;
+        reel2.innerText = res2;
+        reel3.innerText = res3;
+
+        if (isJackpot) {
+          setTimeout(() => {
+            showJackpotQuote();
+          }, 300);
+        } else {
+          setTimeout(() => {
+            alert("ayo coba lagi sayangku cintaku duniaku!");
+          }, 300);
+        }
+
+        spinBtn.disabled = false;
+        spinBtn.innerText = 'Spin for Lucky Love 💞';
+        isSpinning = false;
+      }, 2000);
+    }
+
+    // FUNGSI EFEK LEDAKAN LOVE & BUNGA
+    function createHeartExplosion() {
+      const particles = ['💖', '💕', '💗', '🌸', '🌷', '✨', '🌺'];
+      const totalParticles = 45;
+
+      for (let i = 0; i < totalParticles; i++) {
+        const p = document.createElement('div');
+        p.classList.add('heart-particle');
+        p.innerText = particles[Math.floor(Math.random() * particles.length)];
+
+        p.style.left = '50%';
+        p.style.top = '50%';
+
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 120 + Math.random() * 260;
+        const tx = Math.cos(angle) * distance + 'px';
+        const ty = Math.sin(angle) * distance + 'px';
+        const rot = (Math.random() - 0.5) * 360 + 'deg';
+        const fontSize = 18 + Math.random() * 22 + 'px';
+
+        p.style.setProperty('--tx', tx);
+        p.style.setProperty('--ty', ty);
+        p.style.setProperty('--rot', rot);
+        p.style.fontSize = fontSize;
+
+        document.body.appendChild(p);
+
+        setTimeout(() => {
+          p.remove();
+        }, 1600);
+      }
+    }
+
+    // FUNGSI KETIK OTOMATIS (MENGGUNAKAN textContent AGAR SPASI TIDAK HILANG)
+    function typeWriter(text, elementId, charIndex = 0) {
+      const target = document.getElementById(elementId);
+      if (charIndex === 0) target.textContent = '';
+
+      if (charIndex < text.length) {
+        target.textContent += text.charAt(charIndex);
+        typingTimer = setTimeout(() => {
+          typeWriter(text, elementId, charIndex + 1);
+        }, 30);
+      }
+    }
+
+    function showJackpotQuote() {
+      createHeartExplosion();
+
+      const randomData = jackpotData[Math.floor(Math.random() * jackpotData.length)];
+      
+      const quoteDisplay = document.getElementById('quoteDisplay');
+      quoteDisplay.src = randomData.img;
+
+      clearTimeout(typingTimer);
+      document.getElementById('typewriterText').textContent = '';
+
+      const modal = document.getElementById('quoteModal');
+      modal.classList.add('active');
+
+      setTimeout(() => {
+        typeWriter(randomData.text, 'typewriterText');
+      }, 250);
+    }
+
+    function closeModal() {
+      clearTimeout(typingTimer);
+      const modal = document.getElementById('quoteModal');
+      modal.classList.remove('active');
+    }
+  </script>
+</body>
+</html>
